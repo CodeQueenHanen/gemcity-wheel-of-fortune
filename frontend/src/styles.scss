@@ -1,0 +1,70 @@
+/* ─── Global Reset & Variables ─────────────────────────────────────────── */
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+:root {
+  /* Core palette — dark terminal with gem accents */
+  --bg-deep:       #0a0b0f;
+  --bg-panel:      #111318;
+  --bg-surface:    #1a1d26;
+  --bg-raised:     #22263a;
+
+  --border:        #2a2f45;
+  --border-bright: #3d4468;
+
+  /* GemCity gem colors */
+  --gem-cyan:      #00e5ff;
+  --gem-purple:    #b44fff;
+  --gem-gold:      #ffd84d;
+  --gem-red:       #ff4757;
+  --gem-green:     #00e676;
+
+  /* Text */
+  --text-primary:  #e8ecff;
+  --text-secondary:#8890b0;
+  --text-muted:    #4a5070;
+
+  /* Typography */
+  --font-display:  'Syne', sans-serif;
+  --font-mono:     'JetBrains Mono', monospace;
+
+  /* Glow effects */
+  --glow-cyan:   0 0 20px rgba(0,229,255,0.35);
+  --glow-purple: 0 0 20px rgba(180,79,255,0.35);
+  --glow-gold:   0 0 20px rgba(255,216,77,0.35);
+}
+
+html, body {
+  height: 100%;
+  background: var(--bg-deep);
+  color: var(--text-primary);
+  font-family: var(--font-display);
+  font-size: 16px;
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
+  overflow-x: hidden;
+}
+
+/* Scanline texture overlay */
+body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  background: repeating-linear-gradient(
+    0deg,
+    transparent,
+    transparent 2px,
+    rgba(0,0,0,0.08) 2px,
+    rgba(0,0,0,0.08) 4px
+  );
+  pointer-events: none;
+  z-index: 9999;
+}
+
+/* Scrollbar */
+::-webkit-scrollbar { width: 6px; }
+::-webkit-scrollbar-track { background: var(--bg-deep); }
+::-webkit-scrollbar-thumb { background: var(--border-bright); border-radius: 3px; }
