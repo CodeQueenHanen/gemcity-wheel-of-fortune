@@ -1,3 +1,20 @@
+# Angular
 node_modules/
 dist/
 .angular/
+
+# Java / Maven
+backend/target/
+*.class
+*.jar
+*.war
+
+# IntelliJ
+.idea/
+*.iml
+*.iws
+*.ipr
+
+# OS
+.DS_Store
+Thumbs.db

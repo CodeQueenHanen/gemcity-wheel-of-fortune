@@ -64,7 +64,7 @@ import { SolveModalComponent } from '../components/solve-modal/solve-modal.compo
 
           <app-board
             [puzzle]="puzzle"
-            [revealedChars]="revealedChars"
+            [currentPattern]="currentPattern"
             [lastRevealedLetter]="lastRevealedLetter"
           />
 
@@ -326,7 +326,7 @@ export class GameComponent implements OnInit {
   currentSegment: WheelSegment | null = null;
   freeVowelMode = false;
 
-  revealedChars = new Set<string>();
+  currentPattern: string[] = [];
   usedLetters = new Set<string>();
   correctLetters = new Set<string>();
   lastRevealedLetter = '';
@@ -347,7 +347,7 @@ export class GameComponent implements OnInit {
 
   loadNewPuzzle(): void {
     this.loading = true;
-    this.revealedChars = new Set();
+    this.currentPattern = [];
     this.usedLetters = new Set();
     this.correctLetters = new Set();
     this.currentSegment = null;
@@ -400,14 +400,14 @@ export class GameComponent implements OnInit {
 
     const pointsPerHit = this.freeVowelMode ? 0 : (this.currentSegment?.points ?? 0);
 
-    this.gameService.guessLetter(this.puzzle.id, letter, pointsPerHit).subscribe({
+    this.gameService.guessLetter(this.puzzle.id, letter, pointsPerHit, this.correctLetters).subscribe({
       next: result => {
         this.loading = false;
         this.lastRevealedLetter = result.correct ? letter : '';
 
         if (result.correct) {
           this.correctLetters = new Set([...this.correctLetters, letter]);
-          this.revealedChars = new Set([...this.revealedChars, letter]);
+          this.currentPattern = result.updatedPattern;
           this.score += result.pointsEarned;
           this.lastPointsEarned = result.pointsEarned;
 
@@ -449,7 +449,7 @@ export class GameComponent implements OnInit {
         if (result.correct) {
           this.score += result.pointsEarned;
           this.lastPointsEarned = result.pointsEarned;
-          this.revealedChars = new Set('ABCDEFGHIJKLMNOPQRSTUVWXYZ'.split(''));
+          this.currentPattern = result.updatedPattern;
           this.phase = 'SOLVED';
           this.puzzleNumber++;
           this.showToast('CORRECT! Puzzle solved! 🏆', 'win');

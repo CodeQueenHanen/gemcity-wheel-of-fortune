@@ -52,7 +52,7 @@ export class GameService {
   private apiBase = '/api';
 
   // Toggle this to false once Java backend is running
-  private useMock = true;
+  private useMock = false;
 
   getRandomPuzzle(): Observable<Puzzle> {
     if (this.useMock) {
@@ -74,12 +74,15 @@ export class GameService {
     );
   }
 
-  guessLetter(puzzleId: number, letter: string, pointsPerHit: number): Observable<GuessResult> {
+  guessLetter(puzzleId: number, letter: string, pointsPerHit: number, revealedLetters: Set<string> = new Set()): Observable<GuessResult> {
     if (this.useMock) {
       return of(this.mockGuess(puzzleId, letter, pointsPerHit)).pipe(delay(250));
     }
     return this.http.post<GuessResult>(`${this.apiBase}/game/guess`, {
-      puzzleId, letter, pointsPerHit
+      puzzleId,
+      letter,
+      pointsPerHit,
+      revealedLetters: Array.from(revealedLetters)
     }).pipe(catchError(this.handleError));
   }
 

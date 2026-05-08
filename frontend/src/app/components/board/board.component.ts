@@ -167,7 +167,7 @@ const ALWAYS_VISIBLE = new Set(['{','}','(',')','[',']',';','.',',',':','<','>',
 })
 export class BoardComponent implements OnChanges {
   @Input() puzzle: Puzzle | null = null;
-  @Input() revealedChars: Set<string> = new Set();
+  @Input() currentPattern: string[] = [];   // live pattern updated after each guess
   @Input() lastRevealedLetter = '';
 
   tileRows: Tile[][] = [];
@@ -179,12 +179,17 @@ export class BoardComponent implements OnChanges {
   private buildTiles(): void {
     if (!this.puzzle) { this.tileRows = []; return; }
 
-    const pattern = this.puzzle.visiblePattern;
+    // Use the live currentPattern if available, otherwise fall back to puzzle's initial pattern
+    const pattern = this.currentPattern.length > 0
+      ? this.currentPattern
+      : this.puzzle.visiblePattern;
+
     const allTiles: Tile[] = pattern.map(char => {
       const isPunct = ALWAYS_VISIBLE.has(char);
       const isSpace = char === ' ';
       const isLetter = !isSpace && !isPunct;
-      const isRevealed = isLetter ? this.revealedChars.has(char.toUpperCase()) : false;
+      // A letter is revealed if it's not an underscore
+      const isRevealed = isLetter ? char !== '_' : false;
 
       return {
         char,
